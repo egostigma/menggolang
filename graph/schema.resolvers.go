@@ -17,12 +17,61 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 		ID:   fmt.Sprintf("T%d", rand.Int()),
 		User: &model.User{ID: input.UserID, Name: "user " + input.UserID},
 	}
-	r.todos = append(r.todos, todo)
-	return todo, nil
+
+	return r.ServiceTodo.AddTodo(todo)
+}
+
+func (r *mutationResolver) UpdateStatusTodo(ctx context.Context, id string) (*model.Message, error) {
+	todo, err := r.ServiceTodo.GetTodo(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	todo.Done = true
+
+	err = r.ServiceTodo.UpdateTodo(todo)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Message{
+		Message: "Success",
+	}, nil
+}
+
+func (r *mutationResolver) UpdateTodo(ctx context.Context, input model.UpdateTodo) (*model.Todo, error) {
+	todo := &model.Todo{
+		ID:   input.ID,
+		Text: input.Text,
+		Done: input.Done,
+	}
+	err := r.ServiceTodo.UpdateTodo(todo)
+
+	if err != nil {
+		return nil, err
+	} else {
+		return todo, nil
+	}
+}
+
+func (r *mutationResolver) DeleteTodo(ctx context.Context, id string) (*model.Message, error) {
+	if err := r.ServiceTodo.DeleteTodo(id); err != nil {
+		return nil, err
+	} else {
+		return &model.Message{
+			Message: "Delete success",
+		}, nil
+	}
 }
 
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	return r.todos, nil
+	return r.ServiceTodo.ListTodo()
+}
+
+func (r *queryResolver) Todo(ctx context.Context, id string) (*model.Todo, error) {
+	return r.ServiceTodo.GetTodo(id)
 }
 
 // Mutation returns generated.MutationResolver implementation.

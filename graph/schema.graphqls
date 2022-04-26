@@ -16,6 +16,7 @@ type User {
 
 type Query {
   todos: [Todo!]!
+  todo(id: String!): Todo!
 }
 
 input NewTodo {
@@ -23,6 +24,19 @@ input NewTodo {
   userId: String!
 }
 
+input UpdateTodo {
+  id: ID!
+  text: String!
+  done: Boolean!
+}
+
 type Mutation {
   createTodo(input: NewTodo!): Todo!
+  updateStatusTodo(id: String!): Message!
+  updateTodo(input: UpdateTodo!): Todo!
+  deleteTodo(id: String!): Message!
+}
+
+type Message {
+  Message: String!
 }
