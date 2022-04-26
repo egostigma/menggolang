@@ -1,24 +1,29 @@
-/*----------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License. See LICENSE in the project root for license information.
- *---------------------------------------------------------------------------------------*/
-
 package main
 
 import (
-	"fmt"
-	"io"
-	"main/hello"
+	"log"
+	"main/graph"
+	"main/graph/generated"
 	"net/http"
+	"os"
+
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
 )
 
-func handle(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, hello.Hello())
-}
+const defaultPort = "8080"
 
 func main() {
-	portNumber := "9000"
-	http.HandleFunc("/", handle)
-	fmt.Println("Server listening on port ", portNumber)
-	http.ListenAndServe(":"+portNumber, nil)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = defaultPort
+	}
+
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+
+	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	http.Handle("/query", srv)
+
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
