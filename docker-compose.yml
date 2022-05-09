@@ -1,12 +1,10 @@
 version: '3.8'
 
-volumes:
-  postgres-data:
-
-    null
 services:
   app:
     # image: cosmtrek/air
+    depends_on:
+      - mongodb
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -33,6 +31,8 @@ services:
       
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
+    networks:
+      - menggolang-network
 
     # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
     # network_mode: service:db
@@ -41,4 +41,26 @@ services:
 
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally. 
     # (Adding the "ports" property to this file will not forward from a Codespace.)
-    
+  
+  db:
+    image: mongo
+    container_name: "${DB_HOST:-db}"
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=menggolang
+    volumes:
+      - "./mongodata:/data/db"
+      - "./init-mongo.js:/docker-entrypoint-initdb.d/init.mongo.js:ro"
+    networks:
+      - menggolang-network
+
+# Docker Networks
+networks:
+  menggolang-network:
+    driver: bridge
+
+# Volumes
+volumes:
+  dbdata:
+    driver: local

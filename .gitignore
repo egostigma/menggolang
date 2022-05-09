@@ -338,3 +338,6 @@ debug
 .env
 .air.toml
 tmp
+
+__debug_bin
+mongodata/*
