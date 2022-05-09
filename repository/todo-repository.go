@@ -33,7 +33,7 @@ func NewTodoRepository() TodoRepository {
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 
 	// mongodb+srv://USERNAME:PASSWORD@HOST:PORT
-	MONGODB := os.Getenv("MONGODB")
+	MONGODB := os.Getenv("MONGODB_SERVER")
 	// MONGODB := "mongodb://db"
 
 	// Set client options
