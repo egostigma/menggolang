@@ -18,6 +18,7 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 		ID:   fmt.Sprintf("T%d", rand.Int()),
 		User: &model.User{ID: input.UserID, Name: "user " + input.UserID},
 	}
+	todoRepository := repository.NewTodoRepository()
 	todoRepository.Save(todo)
 	return todo, nil
 }
@@ -68,10 +69,12 @@ func (r *mutationResolver) DeleteTodo(ctx context.Context, id string) (*model.Me
 }
 
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
+	todoRepository := repository.NewTodoRepository()
 	return todoRepository.FindAll(), nil
 }
 
 func (r *queryResolver) Todo(ctx context.Context, id string) (*model.Todo, error) {
+	todoRepository := repository.NewTodoRepository()
 	return todoRepository.FindOne(id), nil
 }
 
@@ -83,13 +86,3 @@ func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//    it when you're done.
-//  - You have helper methods in this file. Move them out to keep these resolver files clean.
-var (
-	todoRepository repository.TodoRepository = repository.NewTodoRepository()
-)
