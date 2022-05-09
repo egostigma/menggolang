@@ -24,9 +24,9 @@ type database struct {
 	client *mongo.Client
 }
 
-const (
-	DATABASE   = "menggolang"
-	COLLECTION = "todo"
+var (
+	DATABASE   string = os.Getenv("MONGODB_DATABASE")
+	COLLECTION string = os.Getenv("MONGODB_COLLECTION")
 )
 
 func NewTodoRepository() TodoRepository {
