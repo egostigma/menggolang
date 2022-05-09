@@ -13,11 +13,6 @@ import (
 
 const defaultPort = "8000"
 
-type Person struct {
-	Name string
-	Age  int
-}
-
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
