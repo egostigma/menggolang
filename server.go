@@ -15,7 +15,7 @@ import (
 const defaultPort = "8000"
 
 func main() {
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load(".env"); err != nil {
 		panic("Unable To Load .env File")
 	}
 

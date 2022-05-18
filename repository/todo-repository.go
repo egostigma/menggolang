@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"main/graph/model"
+	"main/helper"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -25,8 +26,8 @@ type database struct {
 }
 
 var (
-	DATABASE   string = os.Getenv("MONGODB_DATABASE")
-	COLLECTION string = os.Getenv("MONGODB_COLLECTION")
+	DATABASE   string = helper.GoDotEnvVariable("MONGODB_DATABASE")
+	COLLECTION string = helper.GoDotEnvVariable("MONGODB_COLLECTION")
 )
 
 func NewTodoRepository() TodoRepository {
