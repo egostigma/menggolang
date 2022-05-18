@@ -9,11 +9,16 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 const defaultPort = "8000"
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		panic("Unable To Load .env File")
+	}
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
